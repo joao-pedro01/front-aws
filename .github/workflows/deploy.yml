@@ -109,14 +109,14 @@ jobs:
           script: |
             REPO_NAME="front-aws"
             VERSION="0.1.0"
-            IMAGE="***/$REPO_NAME:$VERSION"
-
+            IMAGE="joaopedro01/$REPO_NAME:$VERSION"
+          
             echo "🔄 Iniciando deploy da imagem: $IMAGE"
-
+          
             # Garantir que o Docker esteja disponível
             sudo yum update -y || sudo apt update -y
             sudo systemctl start docker || sudo service docker start
-
+          
             # Verificar container existente (rodando ou parado)
             CONTAINER_ID=$(docker ps -aq --filter "name=$REPO_NAME")
             if [ -n "$CONTAINER_ID" ]; then
@@ -127,12 +127,12 @@ jobs:
             else
               echo "ℹ️ Nenhum container atual encontrado com nome: $REPO_NAME"
             fi
-
+          
             echo "🧹 Removendo imagem local antiga, se existir..."
             docker rmi -f "$IMAGE" || echo "ℹ️ Nenhuma imagem antiga encontrada com a tag: $IMAGE"
-
+          
             echo "⬇️ Baixando nova imagem..."
             docker pull $IMAGE
-
+          
             echo "🚀 Subindo novo container... $REPO_NAME $IMAGE"
             docker run -d -p 80:80 --name $REPO_NAME $IMAGE
