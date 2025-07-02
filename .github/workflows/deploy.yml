@@ -202,4 +202,4 @@ jobs:
             docker pull $IMAGE
 
             echo "🚀 Subindo novo container..."
-            docker run -d -p 3000:8080 --name $REPO_NAME $IMAGE
+            docker run -d -p 3000:3001 --name $REPO_NAME $IMAGE
