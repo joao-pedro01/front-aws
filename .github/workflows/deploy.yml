@@ -108,7 +108,6 @@ jobs:
           echo "Verificando repositório: ${{ steps.define_repo_name.outputs.repo_name }}"
           RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -u $DOCKERHUB_USERNAME:$DOCKERHUB_TOKEN \
             "https://hub.docker.com/v2/repositories/$DOCKERHUB_USERNAME/${{ steps.define_repo_name.outputs.repo_name }}/")
-
           if [ "$RESPONSE" -eq 404 ]; then
             echo "Criando repositório no Docker Hub..."
             curl -s -X POST -u $DOCKERHUB_USERNAME:$DOCKERHUB_TOKEN \
@@ -125,11 +124,11 @@ jobs:
         run: |
           VERSION=${{ steps.version.outputs.new_version }}
           sed -i '/<\/Container>/i \
-            <Row className="mt-3">\
-              <Col>\
-                <p style={{ textAlign: "center", fontStyle: "italic" }}>Versão: '"$VERSION"'</p>\
-              </Col>\
-            </Row>' src/App.js
+<Row className="mt-3">\
+<Col>\
+<p style={{ textAlign: "center", fontStyle: "italic" }}>Versão: '"$VERSION"'</p>\
+</Col>\
+</Row>' src/App.js
 
       - name: Criar imagem docker
         if: steps.version.outputs.should_deploy == 'true'
@@ -187,13 +186,8 @@ jobs:
             sudo yum update -y
             sudo service docker start
 
-            CONTAINER_ID=$(docker ps -q --filter "name=$REPO_NAME")
-            if [ -n "$CONTAINER_ID" ]; then
-              echo "🛑 Parando e removendo container atual..."
-              docker rm -f $REPO_NAME || true
-            else
-              echo "ℹ️ Nenhum container atual encontrado com nome: $REPO_NAME"
-            fi
+            echo "🛑 Removendo container antigo se existir (mesmo parado)..."
+            docker rm -f $REPO_NAME 2>/dev/null || echo "ℹ️ Nenhum container para remover"
 
             echo "🧹 Limpando imagens antigas..."
             docker image prune -f
